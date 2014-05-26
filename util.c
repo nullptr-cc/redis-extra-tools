@@ -5,9 +5,11 @@
 
 #include "util.h"
 
-void parse_argv(int argc, char * argv[], opts_t * opts)
+void parse_argv(int argc, char * argv[], opts_base_t * opts)
 {
     int c;
+    opterr = 0;
+    optind = 1;
 
     while ((c = getopt(argc, argv, "h:p:s:n:")) != -1) {
         switch (c) {
@@ -30,14 +32,12 @@ void parse_argv(int argc, char * argv[], opts_t * opts)
                 break;
 
             default:
-                fprintf(stderr, "Usage: %s [-h <host>] [-p <port>] [-s <socket_path>] [-n <dbnum>]\n", argv[0]);
-                exit(EXIT_FAILURE);
                 break;
         }
     }
 }
 
-redisContext * connect_to_redis(opts_t * opts)
+redisContext * connect_to_redis(opts_base_t * opts)
 {
     redisContext * conn;
 

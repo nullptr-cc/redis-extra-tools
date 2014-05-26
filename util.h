@@ -8,7 +8,7 @@ typedef struct {
     int unsigned port;
     char * socket;
     int unsigned dbnum;
-} opts_t;
+} opts_base_t;
 
 #define DEFAULT_HOST "127.0.0.1"
 #define DEFAULT_PORT 6379
@@ -18,9 +18,9 @@ typedef struct {
 #define CMD_SIZE 2048
 #define BUFF_SIZE 8192
 
-void parse_argv(int argc, char * argv[], opts_t * opts);
+void parse_argv(int argc, char * argv[], opts_base_t * opts);
 
-redisContext * connect_to_redis(opts_t * opts);
+redisContext * connect_to_redis(opts_base_t * opts);
 redisReply * process_redis_command(redisContext * conn, char * cmd);
 
 void bin2hex(char * in, int len, char * out);

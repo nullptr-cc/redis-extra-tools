@@ -10,7 +10,7 @@
 
 int main(int argc, char * argv[])
 {
-    opts_t opts = {DEFAULT_HOST, DEFAULT_PORT, NULL, DEFAULT_DBNUM};
+    opts_base_t opts = {DEFAULT_HOST, DEFAULT_PORT, NULL, DEFAULT_DBNUM};
 
     parse_argv(argc, argv, &opts);
 

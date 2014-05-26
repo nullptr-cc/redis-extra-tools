@@ -23,10 +23,6 @@ redis-restore -s /var/run/redis.sock -n 4 < dump.rd
 + -n - db number, default is 0
 
 ### TODO
-**redis-dump**
-
-+ filter for keys
-
 **redis-restore**
 
 + strategy - flushdb before restore, replace or ignore dumplicate keys

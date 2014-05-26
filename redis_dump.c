@@ -8,13 +8,41 @@
 
 #include "util.h"
 
+#define DEFAULT_KEYS_FILTER "*"
+
+typedef struct {
+    opts_base_t base;
+    char * keys_filter;
+} opts_dump_t;
+
+void parse_argv_for_dump(int argc, char * argv[], opts_dump_t * opts)
+{
+    parse_argv(argc, argv, &(opts->base));
+
+    int c;
+    opterr = 0;
+    optind = 1;
+
+    while ((c = getopt(argc, argv, "f:")) != -1) {
+        switch (c) {
+            case 'f':
+                opts->keys_filter = (char*) malloc(strlen(optarg) + 1);
+                strcpy(opts->keys_filter, optarg);
+                break;
+
+            default:
+                break;
+        }
+    }
+}
+
 int main(int argc, char * argv[])
 {
-    opts_t opts = {DEFAULT_HOST, DEFAULT_PORT, NULL, DEFAULT_DBNUM};
+    opts_dump_t opts = {{DEFAULT_HOST, DEFAULT_PORT, NULL, DEFAULT_DBNUM}, DEFAULT_KEYS_FILTER};
 
-    parse_argv(argc, argv, &opts);
+    parse_argv_for_dump(argc, argv, &opts);
 
-    redisContext * conn = connect_to_redis(&opts);
+    redisContext * conn = connect_to_redis(&(opts.base));
 
     redisReply * keys_rply, * dump_rply;
     char * cmd = (char*) malloc(CMD_SIZE);
@@ -22,7 +50,8 @@ int main(int argc, char * argv[])
     char * dump_str;
     long long ttl;
 
-    keys_rply = process_redis_command(conn, "KEYS *");
+    sprintf(cmd, "KEYS %s", opts.keys_filter);
+    keys_rply = process_redis_command(conn, cmd);
 
     for (i = 0; i < keys_rply->elements; ++i) {
         sprintf(cmd, "PTTL %s", keys_rply->element[i]->str);
